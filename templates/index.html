@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>
+      web chat2
+    </title>
+  </head>
+  <body>
+    <a href="/new">投稿</a>
+    <h1>投稿一覧</h1>
+    <ul>
+      {{ range .tweet }}
+      <div>
+        <p>Nameさんのツイート:{{ .Text }}</p>
+        <a href="/show/{{.ID}}">詳細</a>
+      </div>
+      {{ end }}
+    </ul>
+  </body>
+</html>
