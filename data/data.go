@@ -3,11 +3,12 @@ package data
 import (
   "github.com/jinzhu/gorm"
   _ "github.com/jinzhu/gorm/dialects/mysql"
+  "golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
   gorm.Model
-  Name string
+  NickName string
   Email string
   Password string
 }
@@ -19,17 +20,17 @@ type Tweet struct {
   UserID int
 }
 
-func DbConnect() {
+func DbInit() {
   db, err := gorm.Open("mysql", "root:@/webchat2?charset=utf8&parseTime=True&loc=Local")
-    if err != nil {
-      panic("failed to connect database")
-    }
-    db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&User{}, &Tweet{})
-    if db.Error != nil {
-      panic(db.Error)
-    }
-    defer db.Close()
-    db.LogMode(true)
+  if err != nil {
+    panic("failed to connect database")
+  }
+  defer db.Close()
+  db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&User{}, &Tweet{})
+  if db.Error != nil {
+    panic(db.Error)
+  }
+  db.LogMode(true)
 }
 
 func GetAll() []Tweet {
@@ -37,19 +38,19 @@ func GetAll() []Tweet {
   if err != nil {
     panic("failed to connect database")
   }
+  defer db.Close()
   var tweet []Tweet
   db.Find(&tweet)
-  defer db.Close()
   return tweet
 }
 
-func Create(text string, image string) {
+func TweetCreate(text string, image string) {
   db, err := gorm.Open("mysql", "root:@/webchat2?charset=utf8&parseTime=True&loc=Local")
   if err != nil {
     panic("failed to connect database")
   }
-  db.Create(&Tweet{Text: text, Image: image})
   defer db.Close()
+  db.Create(&Tweet{Text: text, Image: image})
 }
 
 func TweetFind(id string) Tweet {
@@ -57,8 +58,25 @@ func TweetFind(id string) Tweet {
   if err != nil {
     panic("failed to connect database")
   }
+  defer db.Close()
   var tweet Tweet
   db.Where("id = ?", id).First(&tweet)
-  defer db.Close()
   return tweet
+}
+
+func PasswordHash(password string) string {
+  passwordhash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+  if err != nil {
+    panic(err)
+  }
+  return string(passwordhash)
+}
+
+func UserCreate(nickname string, email string, passwordhash string) {
+  db, err := gorm.Open("mysql", "root:@/webchat2?charset=utf8&parseTime=True&loc=Local")
+  if err != nil {
+    panic("failed to connect database")
+  }
+  defer db.Close()
+  db.Create(&User{NickName: nickname, Email: email, Password: passwordhash})
 }
