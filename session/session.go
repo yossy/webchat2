@@ -45,3 +45,9 @@ func GetSessionInfo(c *gin.Context) SessionInfo {
   }
   return info
 }
+
+func GetSessionId(c *gin.Context) uint {
+  session := sessions.Default(c)
+  user_id := session.Get("userID")
+  return user_id.(uint)
+}

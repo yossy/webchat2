@@ -52,7 +52,8 @@ func TweetNew(c *gin.Context) {
 func TweetPost(c *gin.Context) {
   text := c.PostForm("text")
   image := c.PostForm("image")
-  data.TweetCreate(text, image)
+  user_id := session.GetSessionId(c)
+  data.TweetCreate(text, image, user_id)
   c.Redirect(302, "/")
 }
 

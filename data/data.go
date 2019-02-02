@@ -17,7 +17,7 @@ type Tweet struct {
   gorm.Model
   Text string
   Image string
-  UserID int
+  UserID uint
 }
 
 func DbInit() {
@@ -44,13 +44,13 @@ func GetAll() []Tweet {
   return tweet
 }
 
-func TweetCreate(text string, image string) {
+func TweetCreate(text string, image string, userId uint) {
   db, err := gorm.Open("mysql", "root:@/webchat2?charset=utf8&parseTime=True&loc=Local")
   if err != nil {
     panic("failed to connect database")
   }
   defer db.Close()
-  db.Create(&Tweet{Text: text, Image: image})
+  db.Create(&Tweet{Text: text, Image: image, UserID: userId})
 }
 
 func TweetFind(id string) Tweet {
