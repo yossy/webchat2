@@ -9,6 +9,7 @@
   <body>
     <ul>
       {{if .SessionInfo.IsSessionAlive}}
+      <li><a href="/new">投稿</a></li>
       <li><a href="/mypage">マイページ</a></li>
       <li>
         <form action="/signout" method="POST">
@@ -20,7 +21,6 @@
       <li><a href="/signin">ログイン</a></li>
       {{end}}
     </ul>
-    <a href="/new">投稿</a>
     <h1>投稿一覧</h1>
     <ul>
       {{ range .tweet }}
