@@ -72,11 +72,30 @@ func PasswordHash(password string) string {
   return string(passwordhash)
 }
 
-func UserCreate(nickname string, email string, passwordhash string) {
+func FindLoginUser(email string, password string) User {
   db, err := gorm.Open("mysql", "root:@/webchat2?charset=utf8&parseTime=True&loc=Local")
   if err != nil {
     panic("failed to connect database")
   }
   defer db.Close()
+  var user User
+  db.Where(&User{Email: email}).First(&user)
+  passwordhashchecked := user.Password
+  missmatch := bcrypt.CompareHashAndPassword([]byte(passwordhashchecked), []byte(password))
+  if missmatch != nil {
+    panic("failed to check password")
+  }
+  return user
+}
+
+func UserCreate(nickname string, email string, passwordhash string) User {
+  db, err := gorm.Open("mysql", "root:@/webchat2?charset=utf8&parseTime=True&loc=Local")
+  if err != nil {
+    panic("failed to connect database")
+  }
+  defer db.Close()
+  var user User
   db.Create(&User{NickName: nickname, Email: email, Password: passwordhash})
+  db.Where(&User{Email: email}).First(&user)
+  return user
 }
