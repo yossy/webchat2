@@ -3,13 +3,14 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
   "../data"
+  "../session"
 )
 
-
 func TweetIndex(c *gin.Context) {
+  info := session.GetSessionInfo(c)
   tweet := data.GetAll()
 	c.HTML(200, "index.html", gin.H{
-    "tweet": tweet,
+    "tweet": tweet, "SessionInfo": info,
     })
 }
 
@@ -22,7 +23,25 @@ func UserSignup(c *gin.Context) {
   email := c.PostForm("email")
   password := c.PostForm("password")
   passwordhash := data.PasswordHash(password)
-  data.UserCreate(nickname, email, passwordhash)
+  user := data.UserCreate(nickname, email, passwordhash)
+  session.Login(c, user)
+  c.Redirect(302, "/")
+}
+
+func UserSigninForm(c *gin.Context) {
+  c.HTML(200, "user_signin.html", nil)
+}
+
+func UserSignin(c *gin.Context) {
+  email := c.PostForm("email")
+  password := c.PostForm("password")
+  user := data.FindLoginUser(email, password)
+  session.Login(c, user)
+  c.Redirect(302, "/")
+}
+
+func UserSignOut(c *gin.Context) {
+  session.ClearSession(c)
   c.Redirect(302, "/")
 }
 
