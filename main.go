@@ -19,8 +19,13 @@ func main() {
 	router.GET("/signin", controller.UserSigninForm)
 	router.POST("/signin", controller.UserSignin)
 	router.POST("/signout", controller.UserSignOut)
+	router.GET("/user/mypage/:id", controller.UserMypage)
 	router.GET("/new", controller.TweetNew)
 	router.POST("/new", controller.TweetPost)
 	router.GET("/show/:id", controller.TweetShow)
+	router.GET("/edit/:id", controller.TweetEdit)
+	router.POST("/edit/:id", controller.TweetUpdate)
+	router.POST("/delete/:id", controller.TweetDestroy)
+	router.POST("/tweet/:id/comments", controller.CommentNew)
 	router.Run()
 }

@@ -60,7 +60,47 @@ func TweetPost(c *gin.Context) {
 func TweetShow(c *gin.Context) {
   id := c.Param("id")
   tweet := data.TweetFind(id)
+  comments := data.GetComments(id)
   c.HTML(200, "show.html", gin.H{
+    "tweet": tweet, "comments": comments,
+    })
+}
+
+func TweetDestroy(c *gin.Context) {
+  id := c.Param("id")
+  data.TweetDelete(id)
+  c.Redirect(302, "/")
+}
+
+func TweetEdit(c *gin.Context) {
+  id := c.Param("id")
+  tweet := data.TweetFind(id)
+  c.HTML(200, "tweet_edit.html", gin.H{
     "tweet": tweet,
     })
+}
+
+func TweetUpdate(c *gin.Context) {
+  id := c.Param("id")
+  text := c.PostForm("text")
+  image := c.PostForm("image")
+  data.TweetUpdate(id, text, image)
+  c.Redirect(302, "/")
+}
+
+func UserMypage(c *gin.Context) {
+  id := c.Param("id")
+  // user:= data.UserFind(id)
+  user, tweets := data.MyTweetFind(id)
+  c.HTML(200, "user_mypage.html", gin.H{
+    "tweets": tweets, "user": user,
+    })
+}
+
+func CommentNew(c *gin.Context) {
+  id := c.Param("id")
+  comment := c.PostForm("text")
+  user_id := session.GetSessionId(c)
+  data.CommentCreate(id, comment, user_id)
+  c.Redirect(302, "/show/" + id)
 }

@@ -10,7 +10,7 @@
     <ul>
       {{if .SessionInfo.IsSessionAlive}}
       <li><a href="/new">投稿</a></li>
-      <li><a href="/mypage">マイページ</a></li>
+      <li><a href="/user/mypage/{{.SessionInfo.UserID}}">マイページ</a></li>
       <li>
         <form action="/signout" method="POST">
           <input type="submit" value="ログアウト">
@@ -25,8 +25,8 @@
     <ul>
       {{ range .tweet }}
       <div>
-        <p>Nameさんのツイート:{{ .Text }}</p>
-        <a href="/show/{{.ID}}">詳細</a>
+          <p>{{ .UserID }}さんのツイート:{{ .Text }}</p>
+          <a href="/show/{{.ID}}">詳細</a>
       </div>
       {{ end }}
     </ul>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>
+      web chat2
+    </title>
+  </head>
+  <body>
+    <li><a href="/">TOP</a></li>
+    <div>
+      <form method="post" action="/edit/{{.tweet.ID}}" enctype="multipart/form-data">
+        <p>IMAGE：<input type="file" name="image"></p>
+        <p>ツイート：<input type="textarea" name="text" size="30" placeholder="入力してください" value="{{.tweet.Text}}"></p>
+        <input type="submit" value="Send">
+      </form>
+    </div>
+  </body>
+</html>
