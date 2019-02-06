@@ -6,4 +6,20 @@
     {{ .tweet.Text }}
   </p>
   <a href="/">top</a>
+  <a href="/edit/{{ .tweet.ID }}">編集</a>
+  <form action="/delete/{{ .tweet.ID }}" method="POST">
+    <input type="submit" value="削除">
+  </form>
+  <form action="/tweet/{{.tweet.ID}}/comments" method="POST">
+    <input type="textarea" name="text" placeholder="Comment" size="30">
+    <input type="submit" value="comment">
+  </form>
+  <h1>コメント一覧</h1>
+    <ul>
+      {{ range .comments }}
+      <div>
+          <p>{{ .UserID }}:{{ .Text }}</p>
+      </div>
+      {{ end }}
+    </ul>
 </body>
