@@ -16,12 +16,13 @@
         </form>
       </li>
     </ul>
-    <h1>{{ .user.NickName }}さんのマイページ</h1>
-    <h1>{{ .user.NickName }}さんの投稿一覧</h1>
+    <h1>{{.user.NickName}}さんのマイページ</h1>
+    <h1>{{.user.NickName}}さんの投稿一覧</h1>
     <ul>
-      {{ range .tweets }}
+      {{range .tweets}}
       <div>
-        <p>{{ .Text }}</p>
+        <p>投稿者：{{.User.NickName}}</p>
+        <p>{{.Text}}</p>
         <a href="/show/{{.ID}}">詳細</a>
       </div>
       {{ end }}

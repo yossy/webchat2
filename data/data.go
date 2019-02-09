@@ -5,6 +5,7 @@ import (
   _ "github.com/jinzhu/gorm/dialects/mysql"
   "golang.org/x/crypto/bcrypt"
   "strconv"
+  "fmt"
 )
 
 type User struct {
@@ -21,6 +22,7 @@ type Tweet struct {
   Text string
   Image string
   UserID uint
+  User User
   Comments []Comment
 }
 
@@ -41,18 +43,17 @@ func DbInit() {
   if db.Error != nil {
     panic(db.Error)
   }
-  db.LogMode(true)
 }
 
 func GetAll() []Tweet {
   db, err := gorm.Open("mysql", "root:@/webchat2?charset=utf8&parseTime=True&loc=Local")
   if err != nil {
-    panic("failed to connect database")
+    fmt.Println(err)
   }
   defer db.Close()
-  var tweet []Tweet
-  db.Order("created_at desc").Find(&tweet)
-  return tweet
+  var tweets []Tweet
+  db.Preload("User").Order("created_at desc").Find(&tweets)
+  return tweets
 }
 
 func TweetCreate(text string, image string, userId uint) {
@@ -158,22 +159,9 @@ func MyTweetFind(id string) (User, []Tweet) {
     panic("failed to connect database")
   }
   defer db.Close()
-  db.LogMode(true)
   var tweets []Tweet
   var user User
   db.Find(&user, id)
-  db.Model(&user).Association("Tweets").Find(&tweets)
-  db.Preload("User").Order("created_at desc").Where("user_id = ?", &user.ID).Find(&tweets)
+  db.Preload("User").Order("created_at desc").Where("user_id = ?", id).Find(&tweets)
   return user, tweets
 }
-
-// func UserFind(id string) User {
-//   db, err := gorm.Open("mysql", "root:@/webchat2?charset=utf8&parseTime=True&loc=Local")
-//   if err != nil {
-//     panic("failed to connect database")
-//   }
-//   defer db.Close()
-//   var user User
-//   db.Find(&user, id).Related(&user.Tweets)
-//   return user
-// }
