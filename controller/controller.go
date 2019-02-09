@@ -8,9 +8,9 @@ import (
 
 func TweetIndex(c *gin.Context) {
   info := session.GetSessionInfo(c)
-  tweet := data.GetAll()
+  tweets := data.GetAll()
 	c.HTML(200, "index.html", gin.H{
-    "tweet": tweet, "SessionInfo": info,
+    "tweets": tweets, "SessionInfo": info,
     })
 }
 
@@ -90,7 +90,6 @@ func TweetUpdate(c *gin.Context) {
 
 func UserMypage(c *gin.Context) {
   id := c.Param("id")
-  // user:= data.UserFind(id)
   user, tweets := data.MyTweetFind(id)
   c.HTML(200, "user_mypage.html", gin.H{
     "tweets": tweets, "user": user,
