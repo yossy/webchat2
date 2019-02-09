@@ -23,12 +23,12 @@
     </ul>
     <h1>投稿一覧</h1>
     <ul>
-      {{ range .tweet }}
+      {{range .tweets}}
       <div>
-          <p>{{ .UserID }}さんのツイート:{{ .Text }}</p>
+          <p>{{.User.NickName}}さんのツイート:{{.Text}}</p>
           <a href="/show/{{.ID}}">詳細</a>
       </div>
-      {{ end }}
+      {{end}}
     </ul>
   </body>
 </html>
